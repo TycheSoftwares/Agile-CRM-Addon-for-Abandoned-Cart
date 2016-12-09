@@ -1,0 +1,5 @@
+/* Hide message of data sucessfully added to agile CRM
+-------------------------------------------------------------- */
+#wcap_agile_message{
+	display: none;
+}
