@@ -112,7 +112,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             if ( $hook != 'woocommerce_page_woocommerce_ac_page' ) {
                 return;
             } else {
-                wp_register_script( 'wcap-agile', plugins_url()  . '/agile-crm-for-abandoned-cart-pro-for-woocommerce/assets/js/wcap_agile.js', array( 'jquery' ) );
+                wp_register_script( 'wcap-agile', plugins_url()  . '/agile-crm-for-abandoned-cart/assets/js/wcap_agile.js', array( 'jquery' ) );
                 wp_enqueue_script( 'wcap-agile' );
                 wp_localize_script( 'wcap-agile', 'wcap_agile_params', array(
 	                                'ajax_url' => admin_url( 'admin-ajax.php' )
@@ -125,7 +125,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             if ( $hook != 'woocommerce_page_woocommerce_ac_page' ) {
                 return;
             } else {
-                wp_enqueue_style( 'wcap-agile',  plugins_url() . '/agile-crm-for-abandoned-cart-pro-for-woocommerce/assets/css/wcap_agile_style.css' );
+                wp_enqueue_style( 'wcap-agile',  plugins_url() . '/agile-crm-for-abandoned-cart/assets/css/wcap_agile_style.css' );
 			}
         }
 
