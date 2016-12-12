@@ -68,7 +68,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 			add_action ( 'wcap_add_tabs',       				   array( &$this, 'wcap_agile_crm_add_tab' ) );
 			add_action ( 'admin_init',          				   array( &$this, 'wcap_agile_crm_initialize_settings_options' ) );
 			add_action ( 'wcap_display_message', 				   array( &$this, 'wcap_agile_crm_display_message' ) );
-			add_action ( 'wcap_agile_crm_data', 				   array( &$this, 'wcap_agile_crm_display_data' ) );
+			add_action ( 'wcap_crm_data', 				           array( &$this, 'wcap_agile_crm_display_data' ) );
 			add_action ( 'wcap_add_buttons_on_abandoned_orders',   array( &$this, 'wcap_add_export_all_data_to_agile_crm' ) );
 			add_filter ( 'wcap_abandoned_orders_single_column' ,   array( &$this, 'wcap_add_individual_record_to_agile_crm' ), 10 , 2 );
 			add_filter ( 'wcap_abandoned_order_add_bulk_action',   array( &$this, 'wcap_add_bulk_record_to_agile_crm' ), 10 , 1 );
