@@ -16,7 +16,7 @@ add_filter( 'cron_schedules', 'wcap_agile_add_data_schedule' );
 
 function wcap_agile_add_data_schedule( $schedules ) {
 
-	$hour_seconds     = 3600; // 60 * 60
+    $hour_seconds     = 3600; // 60 * 60
     $day_seconds      = 86400; // 24 * 60 * 60
     
     $duration         = get_option( 'wcap_add_automatically_add_after_email_frequency' );
@@ -44,11 +44,11 @@ if ( ! wp_next_scheduled( 'wcap_agile_add_abandoned_data_schedule' ) ) {
 register_uninstall_hook( __FILE__, 'wcap_agile_crm_uninstall' );
 
 function wcap_agile_crm_uninstall (){
-	global $wpdb;
-	
-	$wcap_agile_table_name = $wpdb->prefix . "wcap_agile_abandoned_cart";
- 	$sql_wcap_agile_table_name = "DROP TABLE " . $wcap_agile_table_name ;
- 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    global $wpdb;
+    
+    $wcap_agile_table_name = $wpdb->prefix . "wcap_agile_abandoned_cart";
+    $sql_wcap_agile_table_name = "DROP TABLE " . $wcap_agile_table_name ;
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $wpdb->get_results( $sql_wcap_agile_table_name );
 
     delete_option( 'wcap_enable_agile_crm' );
@@ -61,34 +61,36 @@ function wcap_agile_crm_uninstall (){
 
 if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
-	class Wcap_Agile_CRM {
+    class Wcap_Agile_CRM {
 
-		public function __construct( ) {
-			register_activation_hook( __FILE__,                    array( &$this, 'wcap_agile_crm_create_table' ) );
-			add_action ( 'wcap_add_tabs',       				   array( &$this, 'wcap_agile_crm_add_tab' ) );
-			add_action ( 'admin_init',          				   array( &$this, 'wcap_agile_crm_initialize_settings_options' ) );
-			add_action ( 'wcap_display_message', 				   array( &$this, 'wcap_agile_crm_display_message' ) );
-			add_action ( 'wcap_crm_data', 				           array( &$this, 'wcap_agile_crm_display_data' ) );
-			add_action ( 'wcap_add_buttons_on_abandoned_orders',   array( &$this, 'wcap_add_export_all_data_to_agile_crm' ) );
-			add_filter ( 'wcap_abandoned_orders_single_column' ,   array( &$this, 'wcap_add_individual_record_to_agile_crm' ), 10 , 2 );
-			add_filter ( 'wcap_abandoned_order_add_bulk_action',   array( &$this, 'wcap_add_bulk_record_to_agile_crm' ), 10 , 1 );
-			add_action ( 'wp_ajax_wcap_add_to_agile_crm', 		   array( &$this, 'wcap_add_to_agile_crm_callback' ));
-			add_action ( 'admin_enqueue_scripts',                  array( &$this, 'wcap_agile_enqueue_scripts_js' ) );
-			add_action ( 'admin_enqueue_scripts',                  array( &$this, 'wcap_agile_enqueue_scripts_css' ) );
-			add_action ( 'wcap_agile_add_abandoned_data_schedule', array( 'Wcap_Agile_CRM_Add_Cron_Data', 'wcap_add_agile_abandoned_cart_data' ) );
-			/*
+        public function __construct( ) {
+            register_activation_hook( __FILE__,                    array( &$this, 'wcap_agile_crm_create_table' ) );
+            if ( ! has_action ('wcap_add_tabs' ) ){
+                add_action ( 'wcap_add_tabs',                          array( &$this, 'wcap_agile_crm_add_tab' ));
+            }
+            add_action ( 'admin_init',                             array( &$this, 'wcap_agile_crm_initialize_settings_options' ) );
+            add_action ( 'wcap_display_message',                   array( &$this, 'wcap_agile_crm_display_message' ) );
+            add_action ( 'wcap_crm_data',                          array( &$this, 'wcap_agile_crm_display_data' ) );
+            add_action ( 'wcap_add_buttons_on_abandoned_orders',   array( &$this, 'wcap_add_export_all_data_to_agile_crm' ) );
+            add_filter ( 'wcap_abandoned_orders_single_column' ,   array( &$this, 'wcap_add_individual_record_to_agile_crm' ), 10 , 2 );
+            add_filter ( 'wcap_abandoned_order_add_bulk_action',   array( &$this, 'wcap_add_bulk_record_to_agile_crm' ), 10 , 1 );
+            add_action ( 'wp_ajax_wcap_add_to_agile_crm',          array( &$this, 'wcap_add_to_agile_crm_callback' ));
+            add_action ( 'admin_enqueue_scripts',                  array( &$this, 'wcap_agile_enqueue_scripts_js' ) );
+            add_action ( 'admin_enqueue_scripts',                  array( &$this, 'wcap_agile_enqueue_scripts_css' ) );
+            add_action ( 'wcap_agile_add_abandoned_data_schedule', array( 'Wcap_Agile_CRM_Add_Cron_Data', 'wcap_add_agile_abandoned_cart_data' ) );
+            /*
              * When cron job time changed this function will be called.
              * It is used to reset the cron time again.
              */
             add_action ( 'update_option_wcap_add_automatically_add_after_email_frequency',  array( &$this,'wcap_agile_reset_cron_time_duration' ) );
             add_action ( 'update_option_wcap_add_automatically_add_after_time_day_or_hour', array( &$this,'wcap_agile_reset_cron_time_duration' ) );
-		}
+        }
 
-		function wcap_agile_crm_create_table (){
+        function wcap_agile_crm_create_table (){
 
-			global $wpdb;
+            global $wpdb;
 
-			$wcap_collate = '';
+            $wcap_collate = '';
             if ( $wpdb->has_cap( 'collation' ) ) {
                 $wcap_collate = $wpdb->get_charset_collate();
             }
@@ -108,14 +110,14 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             }
         }
 
-		function wcap_agile_enqueue_scripts_js( $hook ) {
+        function wcap_agile_enqueue_scripts_js( $hook ) {
             if ( $hook != 'woocommerce_page_woocommerce_ac_page' ) {
                 return;
             } else {
                 wp_register_script( 'wcap-agile', plugins_url()  . '/agile-crm-for-abandoned-cart/assets/js/wcap_agile.js', array( 'jquery' ) );
                 wp_enqueue_script( 'wcap-agile' );
                 wp_localize_script( 'wcap-agile', 'wcap_agile_params', array(
-	                                'ajax_url' => admin_url( 'admin-ajax.php' )
+                                    'ajax_url' => admin_url( 'admin-ajax.php' )
                 ) );
             }
         }
@@ -126,7 +128,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 return;
             } else {
                 wp_enqueue_style( 'wcap-agile',  plugins_url() . '/agile-crm-for-abandoned-cart/assets/css/wcap_agile_style.css' );
-			}
+            }
         }
 
         function wcap_agile_reset_cron_time_duration (){
@@ -135,23 +137,57 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
         function wcap_agile_crm_add_tab () {
 
-			$wcap_action           = "";
+            $wcap_action           = "";
             if ( isset( $_GET['action'] ) ) {
                 $wcap_action = $_GET['action'];
             }
 
             $wcap_agile_crm_active = "";
-        	if (  'wcap_agile_crm' == $wcap_action ) {
+            if (  'wcap_crm' == $wcap_action ) {
                 $wcap_agile_crm_active = "nav-tab-active";
             }
             ?>
-            <a href="admin.php?page=woocommerce_ac_page&action=wcap_agile_crm" class="nav-tab <?php if( isset( $wcap_agile_crm_active ) ) echo $wcap_agile_crm_active; ?>"> <?php _e( 'Addon Settings', 'woocommerce-ac' );?> </a>
-			<?php
+            <a href="admin.php?page=woocommerce_ac_page&action=wcap_crm" class="nav-tab <?php if( isset( $wcap_agile_crm_active ) ) echo $wcap_agile_crm_active; ?>"> <?php _e( 'Addon Settings', 'woocommerce-ac' );?> </a>
+            <?php
         }
 
-		function wcap_agile_crm_initialize_settings_options () {
+        function wcap_agile_crm_display_data () {
+            ?>
+            <div id="wcap_manual_email_data_loading" >
+                <img  id="wcap_manual_email_data_loading_image" src="<?php echo plugins_url(); ?>/woocommerce-abandon-cart-pro/assets/images/loading.gif" alt="Loading...">
+            </div>
+            <?php
+            /*
+                When we use the bulk action it will allot the action and mode.
+            */
+            $wcap_action = "";
+            /*
+            When we click on the hover link it will take the action.
+            */
 
-			// First, we register a section. This is necessary since all future options must belong to a
+            if ( '' == $wcap_action && isset( $_GET['action'] )) { 
+                $wcap_action = $_GET['action'];
+            }
+
+            /*
+             *  It will add the settings in the New tab.
+             */
+            if ( 'wcap_crm' == $wcap_action ){
+                ?>
+                <p><?php _e( 'Change settings for exporting the abandoned cart data to the Agile CRM.', 'woocommerce-ac' ); ?></p>
+
+                <form method="post" action="options.php">
+                    <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
+                    <?php do_settings_sections( 'woocommerce_ac_page-wcap_agile_crm_section' ); ?>
+                    <?php submit_button(); ?>
+                </form>
+                <?php
+            }
+        }
+
+        function wcap_agile_crm_initialize_settings_options () {
+
+            // First, we register a section. This is necessary since all future options must belong to a
             add_settings_section(
                 'wcap_agile_crm_general_settings_section',         // ID used to identify this section and with which to register options
                 __( 'Agile CRM Settings', 'woocommerce-ac' ),                  // Title to be displayed on the administration page
@@ -203,9 +239,9 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 'wcap_agile_crm_setting',
                 'wcap_add_automatically_add_after_time_day_or_hour'
             );
-		}
+        }
 
-		/***************************************************************
+        /***************************************************************
          * WP Settings API callback for section
         **************************************************************/
         function wcap_agile_crm_general_settings_section_callback() {
@@ -260,9 +296,9 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             ?>
             <select name="wcap_add_automatically_add_after_email_frequency" id="wcap_add_automatically_add_after_email_frequency">
             <?php
-        	$frequency_edit = '';
-        	$frequency_edit = get_option( 'wcap_add_automatically_add_after_email_frequency' );
-        	for ( $i=1;$i<60;$i++ ) {
+            $frequency_edit = '';
+            $frequency_edit = get_option( 'wcap_add_automatically_add_after_email_frequency' );
+            for ( $i=1;$i<60;$i++ ) {
                 printf( "<option %s value='%s'>%s</option>\n",
                     selected( $i, $frequency_edit, false ),
                     esc_attr( $i ),
@@ -296,12 +332,12 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
         function wcap_agile_crm_display_message (){
 
-        	$wcap_action           = "";
+            $wcap_action           = "";
             if ( isset( $_GET['action'] ) ){
                 $wcap_action = $_GET['action'];
             }
             /*
-				It will display the message when abandoned cart data successfuly added to agile crm.
+                It will display the message when abandoned cart data successfuly added to agile crm.
             */
             ?>
             <div id="wcap_agile_message" class="updated fade">
@@ -314,80 +350,48 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             <?php 
         }
 
-		function wcap_agile_crm_display_data () {
-			?>
-			<div id="wcap_manual_email_data_loading" >
-        		<img  id="wcap_manual_email_data_loading_image" src="<?php echo plugins_url(); ?>/woocommerce-abandon-cart-pro/assets/images/loading.gif" alt="Loading...">
-	        </div>
-	        <?php
-			/*
-				When we use the bulk action it will allot the action and mode.
-			*/
-			$wcap_action = "";
-            /*
-            When we click on the hover link it will take the action.
-            */
+        
 
-            if ( '' == $wcap_action && isset( $_GET['action'] )) { 
-                $wcap_action = $_GET['action'];
-            }
-			/*
-			 *	It will add the settings in the New tab.
-             */
-            if ( 'wcap_agile_crm' == $wcap_action ){
-            	?>
-            	<p><?php _e( 'Change settings for exporting the abandoned cart data to the Agile CRM.', 'woocommerce-ac' ); ?></p>
+        function wcap_add_to_agile_crm_callback (){
 
-                <form method="post" action="options.php">
-                    <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
-                    <?php do_settings_sections( 'wcap_agile_crm_section' ); ?>
-                    <?php settings_errors(); ?>
-                    <?php submit_button(); ?>
-                </form>
-                <?php
-            }
-		}
+            global $wpdb, $woocommerce;
+            $ids = array();
+            
+            if ( $_POST [ 'wcap_all' ] == 'yes' ) {
 
-		function wcap_add_to_agile_crm_callback (){
+                $blank_cart_info         = '{"cart":[]}';
+                $blank_cart_info_guest   = '[]';
+                $wcap_get_all_abandoned_carts = "SELECT id FROM `".$wpdb->prefix."ac_abandoned_cart_history` WHERE user_id > 0 AND recovered_cart = 0 AND abandoned_cart_info NOT LIKE '$blank_cart_info_guest' AND abandoned_cart_info NOT LIKE '%$blank_cart_info%'";
+                
+                $abandoned_cart_results  = $wpdb->get_results( $wcap_get_all_abandoned_carts );
 
-			global $wpdb, $woocommerce;
-			$ids = array();
-			
-			if ( $_POST [ 'wcap_all' ] == 'yes' ) {
-
-				$blank_cart_info         = '{"cart":[]}';
-	    		$blank_cart_info_guest   = '[]';
-				$wcap_get_all_abandoned_carts = "SELECT id FROM `".$wpdb->prefix."ac_abandoned_cart_history` WHERE user_id > 0 AND recovered_cart = 0 AND abandoned_cart_info NOT LIKE '$blank_cart_info_guest' AND abandoned_cart_info NOT LIKE '%$blank_cart_info%'";
-				
-				$abandoned_cart_results  = $wpdb->get_results( $wcap_get_all_abandoned_carts );
-
-        		foreach ( $abandoned_cart_results as $abandoned_cart_results_key => $abandoned_cart_results_value ) {
-        			$ids [] = $abandoned_cart_results_value->id;
-        		}
-			} else {
+                foreach ( $abandoned_cart_results as $abandoned_cart_results_key => $abandoned_cart_results_value ) {
+                    $ids [] = $abandoned_cart_results_value->id;
+                }
+            } else {
                 $ids = $_POST ['wcap_abandoned_cart_ids'];
-			}
-			
-			$abandoned_order_count 	    = count ( $ids );
-			
+            }
+            
+            $abandoned_order_count      = count ( $ids );
+            
             foreach ( $ids as $id ) {
 
-				$get_abandoned_cart     = "SELECT * FROM `".$wpdb->prefix."ac_abandoned_cart_history` WHERE id = $id";
-        		$abandoned_cart_results = $wpdb->get_results( $get_abandoned_cart );
-        		$wcap_user_id			= 0;
-        		$wcap_contact_email	    = '';
-        		$wcap_user_last_name    = '';
-        		$wcap_user_first_name   = '';
-        		$wcap_user_phone        = '';
-        		$wcap_user_address      = '';
-        		$wcap_user_city         = '';
-        		$wcap_user_state        = '';
-        		$wcap_user_country      = '';                                
+                $get_abandoned_cart     = "SELECT * FROM `".$wpdb->prefix."ac_abandoned_cart_history` WHERE id = $id";
+                $abandoned_cart_results = $wpdb->get_results( $get_abandoned_cart );
+                $wcap_user_id           = 0;
+                $wcap_contact_email     = '';
+                $wcap_user_last_name    = '';
+                $wcap_user_first_name   = '';
+                $wcap_user_phone        = '';
+                $wcap_user_address      = '';
+                $wcap_user_city         = '';
+                $wcap_user_state        = '';
+                $wcap_user_country      = '';                                
 
-        		if ( !empty( $abandoned_cart_results ) ) {
+                if ( !empty( $abandoned_cart_results ) ) {
                     $wcap_user_id = $abandoned_cart_results[0]->user_id;
 
-        			if ( $abandoned_cart_results[0]->user_type == "GUEST" && $abandoned_cart_results[0]->user_id != '0' ) {
+                    if ( $abandoned_cart_results[0]->user_type == "GUEST" && $abandoned_cart_results[0]->user_id != '0' ) {
                         $query_guest         = "SELECT billing_first_name, billing_last_name, email_id FROM `" . $wpdb->prefix . "ac_guest_abandoned_cart_history` WHERE id = %d";
                         $results_guest       = $wpdb->get_results( $wpdb->prepare( $query_guest, $wcap_user_id ) );
                         
@@ -404,8 +408,8 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                             $user_data = get_userdata( $wcap_user_id ); 
                             $wcap_contact_email = $user_data->user_email;   
                         }
-						
-						$user_first_name_temp = get_user_meta( $wcap_user_id, 'billing_first_name', true );
+                        
+                        $user_first_name_temp = get_user_meta( $wcap_user_id, 'billing_first_name', true );
                         if( isset( $user_first_name_temp ) && "" == $user_first_name_temp ) {
                             $user_data  = get_userdata( $wcap_user_id );
                             $wcap_user_first_name = $user_data->first_name;
@@ -458,49 +462,49 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                             $user_billing_state = $user_billing_state_temp[0];
                             $wcap_user_state = $woocommerce->countries->states[ $user_billing_country_temp[0] ][ $user_billing_state ];
                         }
-					}
+                    }
 
                     $address = array(
-					  "address" => $wcap_user_address,
-					  "city"    => $wcap_user_city,
-					  "state"   => $wcap_user_state,
-					  "country" => $wcap_user_country
-					);
+                      "address" => $wcap_user_address,
+                      "city"    => $wcap_user_city,
+                      "state"   => $wcap_user_state,
+                      "country" => $wcap_user_country
+                    );
 
-					$wcap_contact_json = array(
-					  "tags"=> array("Abandoned Cart"),
-					  "properties"=>array(
-						    array(
-						      "name"=>  "first_name",
-						      "value"=> $wcap_user_first_name,
-						      "type"=>  "SYSTEM"
-						    ),
-						    array(
-						      "name"=>  "last_name",
-						      "value"=> $wcap_user_last_name,
-						      "type"=>  "SYSTEM"
-						    ),
-						    array(
-						      "name"=>  "email",
-						      "value"=> $wcap_contact_email,
-						      "type"=>  "SYSTEM"
-						    ),
-						    array(
-						        "name"=>  "address",
-						        "value"=> json_encode( $address ),
-						        "type"=>  "SYSTEM"
-						    ),
-						    array(
-						        "name"=>  "phone",
-						        "value"=> $wcap_user_phone,
-						        "type"=>  "SYSTEM"
-						    ) 
-					    )
-					);
+                    $wcap_contact_json = array(
+                      "tags"=> array("Abandoned Cart"),
+                      "properties"=>array(
+                            array(
+                              "name"=>  "first_name",
+                              "value"=> $wcap_user_first_name,
+                              "type"=>  "SYSTEM"
+                            ),
+                            array(
+                              "name"=>  "last_name",
+                              "value"=> $wcap_user_last_name,
+                              "type"=>  "SYSTEM"
+                            ),
+                            array(
+                              "name"=>  "email",
+                              "value"=> $wcap_contact_email,
+                              "type"=>  "SYSTEM"
+                            ),
+                            array(
+                                "name"=>  "address",
+                                "value"=> json_encode( $address ),
+                                "type"=>  "SYSTEM"
+                            ),
+                            array(
+                                "name"=>  "phone",
+                                "value"=> $wcap_user_phone,
+                                "type"=>  "SYSTEM"
+                            ) 
+                        )
+                    );
 
-					$wcap_contact_json 	= json_encode( $wcap_contact_json );
+                    $wcap_contact_json  = json_encode( $wcap_contact_json );
 
-					$cart_info_db_field = json_decode( $abandoned_cart_results[0]->abandoned_cart_info );
+                    $cart_info_db_field = json_decode( $abandoned_cart_results[0]->abandoned_cart_info );
 
                     if( !empty( $cart_info_db_field ) ) {
                         $cart_details           = $cart_info_db_field->cart;
@@ -508,8 +512,8 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                     $product_name = '';
                     $wcap_product_details = '';
                     foreach( $cart_details as $cart_details_key => $cart_details_value ) {
-                    	$quantity_total = $cart_details_value->quantity;
-                    	$product_id     = $cart_details_value->product_id;
+                        $quantity_total = $cart_details_value->quantity;
+                        $product_id     = $cart_details_value->product_id;
                         $prod_name      = get_post( $product_id );
                         $product_name   .= $prod_name->post_title;
                         if( isset( $cart_details_value->variation_id ) && '' != $cart_details_value->variation_id ){
@@ -531,111 +535,111 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                                     $product_name_with_variable = $product_name_with_variable . "\n". html_entity_decode ( $explode_many_varaition_value );
                                 }
                             }
-                        	$product_name = $product_name_with_variable;
+                            $product_name = $product_name_with_variable;
                         }
 
                        $wcap_product_details = html_entity_decode ( $wcap_product_details . "Product Name: " . $product_name . " , Quantity: " . $quantity_total ) . "\n";
-					}
+                    }
                     $wcap_posted_result = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm ( "contacts", $wcap_contact_json, "POST", "application/json" );
                     /*
-						If any user is existing then we just need to add the note of the abandoned cart.
-						It will be the error message when any user is existing.
-					*/
-					if ( 'Sorry, duplicate contact found with the same email address.' == $wcap_posted_result ) {
-						/*
-							Any existing user update its note
-							1. Get the user id from his email address.
-							2. from user id, add the note 
-						*/
-						$wcap_get_user_result = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm("contacts/search/email/$wcap_contact_email", null, "GET", "application/json");
+                        If any user is existing then we just need to add the note of the abandoned cart.
+                        It will be the error message when any user is existing.
+                    */
+                    if ( 'Sorry, duplicate contact found with the same email address.' == $wcap_posted_result ) {
+                        /*
+                            Any existing user update its note
+                            1. Get the user id from his email address.
+                            2. from user id, add the note 
+                        */
+                        $wcap_get_user_result = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm("contacts/search/email/$wcap_contact_email", null, "GET", "application/json");
 
-						$created_customer_result = json_decode( $wcap_get_user_result, true );
+                        $created_customer_result = json_decode( $wcap_get_user_result, true );
                         $created_customer_id     = $created_customer_result[ 'id' ];
 
-						/*
-							Here, we have the user id.
-							Add the note for the user id. We will add the product name in the notes, with the selected quanitity
-						*/
+                        /*
+                            Here, we have the user id.
+                            Add the note for the user id. We will add the product name in the notes, with the selected quanitity
+                        */
 
-						$wcap_note_json = array(
-    					  "subject"     =>     "Abandoned Cart Details",
-    					  "description" => $wcap_product_details,
-    					  "contact_ids" => array( $created_customer_id ),
-						);
+                        $wcap_note_json = array(
+                          "subject"     =>     "Abandoned Cart Details",
+                          "description" => $wcap_product_details,
+                          "contact_ids" => array( $created_customer_id ),
+                        );
 
-						$wcap_note_json    = json_encode( $wcap_note_json );
-						$wcap_contact_note = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm ( "notes", $wcap_note_json, "POST", "application/json" );
+                        $wcap_note_json    = json_encode( $wcap_note_json );
+                        $wcap_contact_note = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm ( "notes", $wcap_note_json, "POST", "application/json" );
 
-					} else if ( ! empty( $wcap_posted_result ) ) {
+                    } else if ( ! empty( $wcap_posted_result ) ) {
 
-						$created_customer_result = json_decode( $wcap_posted_result, true );
+                        $created_customer_result = json_decode( $wcap_posted_result, true );
                         $created_customer_id     = $created_customer_result[ 'id' ];
 
-						/*
-							Here, we have the user id.
-							Add the note for the user id. We will add the product name in the notes, with the selected quanitity
-						*/
+                        /*
+                            Here, we have the user id.
+                            Add the note for the user id. We will add the product name in the notes, with the selected quanitity
+                        */
 
-						$wcap_note_json = array(
-						  "subject"     =>     "Abandoned Cart Details",
-						  "description" => $wcap_product_details,
-						  "contact_ids" => array( $created_customer_id ),
-						);
+                        $wcap_note_json = array(
+                          "subject"     =>     "Abandoned Cart Details",
+                          "description" => $wcap_product_details,
+                          "contact_ids" => array( $created_customer_id ),
+                        );
 
-						$wcap_note_json    = json_encode( $wcap_note_json );
-						$wcap_contact_note = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm ( "notes", $wcap_note_json, "POST", "application/json" );
-					}
-				}
-				
-				$wcap_insert_abandoned_id = "INSERT INTO `" . $wpdb->prefix . "wcap_agile_abandoned_cart` ( abandoned_cart_id, date_time )
+                        $wcap_note_json    = json_encode( $wcap_note_json );
+                        $wcap_contact_note = Wcap_Add_To_Agile_CRM::wcap_add_data_to_agile_crm ( "notes", $wcap_note_json, "POST", "application/json" );
+                    }
+                }
+                
+                $wcap_insert_abandoned_id = "INSERT INTO `" . $wpdb->prefix . "wcap_agile_abandoned_cart` ( abandoned_cart_id, date_time )
                                           VALUES ( '" . $id . "', '" . current_time( 'mysql' ) . "' )";      
                 $wpdb->query( $wcap_insert_abandoned_id );
             }
 
             echo $abandoned_order_count;
             wp_die();
-		}
+        }
 
-		function wcap_add_export_all_data_to_agile_crm (){
-			?>
-			<a href="javascript:void(0);"  id = "add_all_carts" class="button-secondary"><?php _e( 'Export to Agile CRM', 'woocommerce-ac' ); ?></a>
-			<?php
-		}
+        function wcap_add_export_all_data_to_agile_crm (){
+            ?>
+            <a href="javascript:void(0);"  id = "add_all_carts" class="button-secondary"><?php _e( 'Export to Agile CRM', 'woocommerce-ac' ); ?></a>
+            <?php
+        }
 
-		function wcap_add_individual_record_to_agile_crm ( $actions, $abandoned_row_info ){
+        function wcap_add_individual_record_to_agile_crm ( $actions, $abandoned_row_info ){
 
-			$wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
+            $wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
 
-			if ( 'on' == $wcap_agile_crm_check ) { 
+            if ( 'on' == $wcap_agile_crm_check ) { 
 
-				if ( $abandoned_row_info->user_id != 0 ){
-					$abandoned_order_id         = $abandoned_row_info->id ;
-					$class_abandoned_orders     = new WCAP_Abandoned_Orders_Table();
-			        $abandoned_orders_base_url  = $class_abandoned_orders->base_url;
-			        
-			        $inserted['wcap_add_agile'] = '<a href="javascript:void(0);" class="add_single_cart" data-id="' . $abandoned_order_id . '">' . __( 'Add to Agile CRM', 'woocommerce-ac' ) . '</a>';
+                if ( $abandoned_row_info->user_id != 0 ){
+                    $abandoned_order_id         = $abandoned_row_info->id ;
+                    $class_abandoned_orders     = new WCAP_Abandoned_Orders_Table();
+                    $abandoned_orders_base_url  = $class_abandoned_orders->base_url;
+                    
+                    $inserted['wcap_add_agile'] = '<a href="javascript:void(0);" class="add_single_cart" data-id="' . $abandoned_order_id . '">' . __( 'Add to Agile CRM', 'woocommerce-ac' ) . '</a>';
 
-			        $count = count ( $actions ) - 1 ;
+                    $count = count ( $actions ) - 1 ;
 
-			        array_splice( $actions, $count, 0, $inserted ); // it will add the new data just before the Trash link.
-		    	}
-	    	}
+                    array_splice( $actions, $count, 0, $inserted ); // it will add the new data just before the Trash link.
+                }
+            }
 
-	        return $actions;
-		}
+            return $actions;
+        }
 
-		function wcap_add_bulk_record_to_agile_crm ( $wcap_abandoned_bulk_actions ){
-			$wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
-			if ( 'on' == $wcap_agile_crm_check ) {
-				$inserted = array(
-		        	'wcap_add_agile' => __( 'Add to Agile CRM', 'woocommerce-ac' )
-		    	);
-				
-		        $wcap_abandoned_bulk_actions =  $wcap_abandoned_bulk_actions + $inserted ;
-	    	}
-	        return $wcap_abandoned_bulk_actions;
-		}
+        function wcap_add_bulk_record_to_agile_crm ( $wcap_abandoned_bulk_actions ){
+            $wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
+            if ( 'on' == $wcap_agile_crm_check ) {
+                $inserted = array(
+                    'wcap_add_agile' => __( 'Add to Agile CRM', 'woocommerce-ac' )
+                );
+                
+                $wcap_abandoned_bulk_actions =  $wcap_abandoned_bulk_actions + $inserted ;
+            }
+            return $wcap_abandoned_bulk_actions;
+        }
 
-	}
+    }
 }
 $wcap_agile_crm_call = new Wcap_Agile_CRM();
