@@ -178,7 +178,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
                 <form method="post" action="options.php">
                     <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
-                    <?php do_settings_sections( 'woocommerce_ac_page-wcap_agile_crm_section' ); ?>
+                    <?php do_settings_sections( 'wcap_agile_crm_section' ); ?>
                     <?php submit_button(); ?>
                 </form>
                 <?php
