@@ -86,10 +86,8 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             add_action ( 'update_option_wcap_add_automatically_add_after_time_day_or_hour', array( &$this,'wcap_agile_reset_cron_time_duration' ) );
         }
 
-        function wcap_agile_crm_create_table (){
-
+        function wcap_agile_crm_create_table() {
             global $wpdb;
-
             $wcap_collate = '';
             if ( $wpdb->has_cap( 'collation' ) ) {
                 $wcap_collate = $wpdb->get_charset_collate();
@@ -103,11 +101,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                     PRIMARY KEY (`id`)
                     ) $wcap_collate AUTO_INCREMENT=1 ";           
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-            $wpdb->query( $sql );
-
-            if ( !get_option ( 'wcap_enable_agile_crm' ) ){
-                add_option ( 'wcap_enable_agile_crm', 'on' );
-            }
+            $wpdb->query( $sql );        
         }
 
         function wcap_agile_enqueue_scripts_js( $hook ) {
