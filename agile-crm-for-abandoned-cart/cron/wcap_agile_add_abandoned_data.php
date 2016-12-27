@@ -215,7 +215,7 @@ class Wcap_Agile_CRM_Add_Cron_Data {
                 $quantity_total = $cart_details_value->quantity;
                 $product_id     = $cart_details_value->product_id;
                 $prod_name      = get_post( $product_id );
-                $product_name   .= $prod_name->post_title;
+                $product_name   = $prod_name->post_title;
                 if( isset( $cart_details_value->variation_id ) && '' != $cart_details_value->variation_id ){
                     $variation_id               = $cart_details_value->variation_id;
                     $variation                  = wc_get_product( $variation_id );

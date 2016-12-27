@@ -6,9 +6,9 @@ class Wcap_Add_To_Agile_CRM
 {
     public static function wcap_add_data_to_agile_crm ( $entity, $data, $method, $content_type ) {
 
-        $wcap_domain   = get_option( "agile_domain" );
-        $wcap_email    = get_option( "agile_email" );
-        $wcap_rest_api = get_option( "agile_rest_api" );
+        $wcap_domain   = get_option( "wcap_agile_domain" );
+        $wcap_email    = get_option( "wcap_agile_user_name" );
+        $wcap_rest_api = get_option( "wcap_agile_security_token" );
 
         if ($content_type == NULL) {
             $content_type = "application/json";

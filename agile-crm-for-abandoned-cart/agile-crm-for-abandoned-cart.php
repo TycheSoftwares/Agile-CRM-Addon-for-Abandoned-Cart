@@ -173,7 +173,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 <form method="post" action="options.php">
                     <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
                     <?php do_settings_sections( 'wcap_agile_crm_section' ); ?>
-                    <?php submit_button(); ?>
+                    <?php submit_button('Save Agile CRM changes'); ?>
                 </form>
                 <?php
             }
@@ -216,6 +216,35 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 array( __( 'When any abandoned cart is displayed to the Abandoned Orders tab, it will be automatically exported to the Agile CRM after set time.', 'woocommerce-ac' ) )
             );
 
+            add_settings_field(
+                'wcap_agile_user_name',
+                __( 'Agile CRM Username', 'woocommerce-ac' ),
+                array( $this, 'wcap_agile_user_name_callback' ),
+                'wcap_agile_crm_section',
+                'wcap_agile_crm_general_settings_section',
+                array( __( 'Please provide your Agile CRM username.', 'woocommerce-ac' ) )
+            );
+
+            $get_site_name =  strtolower( get_option ('blogname') );
+
+            add_settings_field(
+                'wcap_agile_domain',
+                __( 'Agile CRM Domain', 'woocommerce-ac' ),
+                array( $this, 'wcap_agile_domain_callback' ),
+                'wcap_agile_crm_section',
+                'wcap_agile_crm_general_settings_section',
+                array( __( "Please provide your Agile CRM domain name. The domain is which you have given while creating the agile crm account. For e.x $get_site_name.agilecrm.com", 'woocommerce-ac' ) )
+            );
+
+            add_settings_field(
+                'wcap_agile_security_token',
+                __( 'Agile CRM API Key', 'woocommerce-ac' ),
+                array( $this, 'wcap_agile_security_token_callback' ),
+                'wcap_agile_crm_section',
+                'wcap_agile_crm_general_settings_section',
+                array( __( 'Please provide your Agile CRM API key. Please, login to your agile crm account. On the top right of your main Agile CRM dashboard page, click on your name, then click on Admin Settings. On this page, click on API. Within the API, you will see your REST API key.', 'woocommerce-ac' ) )
+            );
+
             // Finally, we register the fields with WordPress
             register_setting(
                 'wcap_agile_crm_setting',
@@ -232,6 +261,19 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             register_setting(
                 'wcap_agile_crm_setting',
                 'wcap_add_automatically_add_after_time_day_or_hour'
+            );
+
+            register_setting(
+                'wcap_agile_crm_setting',
+                'wcap_agile_user_name'
+            );
+            register_setting(
+                'wcap_agile_crm_setting',
+                'wcap_agile_domain'
+            );
+            register_setting(
+                'wcap_agile_crm_setting',
+                'wcap_agile_security_token'
             );
         }
 
@@ -321,6 +363,61 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 </select>
             <?
             $html = '<label for="wcap_add_automatically_add_after_time_lable"> '  . $args[0] . '</label>';
+            echo $html;
+        }
+
+        /***************************************************************
+         * WP Settings API callback for Agie crm user name
+        **************************************************************/
+        function wcap_agile_user_name_callback($args) {
+            
+            // First, we read the option
+            $wcap_agile_user_name = get_option( 'wcap_agile_user_name' );
+            
+            // Next, we update the name attribute to access this element's ID in the context of the display options array
+            // We also access the show_header element of the options collection in the call to the checked() helper function
+            printf(
+                '<input type="text" id="wcap_agile_user_name" name="wcap_agile_user_name" value="%s" />',
+                isset( $wcap_agile_user_name ) ? esc_attr( $wcap_agile_user_name ) : ''
+            );
+            
+            // Here, we'll take the first argument of the array and add it to a label next to the checkbox
+            $html = '<label for="wcap_agile_user_name_label"> '  . $args[0] . '</label> <br>  <span id ="wcap_agile_user_name_label_error" > Please enter your Agile CRM username. </span>';
+            echo $html;
+        }
+
+        /***************************************************************
+         * WP Settings API callback for agile crm password
+        **************************************************************/
+        function wcap_agile_domain_callback($args) {            
+            // First, we read the option
+            $wcap_agile_domain = get_option( 'wcap_agile_domain' );
+            
+            // Next, we update the name attribute to access this element's ID in the context of the display options array
+            // We also access the show_header element of the options collection in the call to the checked() helper function
+            printf(
+                '<input type="text" id="wcap_agile_domain" name="wcap_agile_domain" value="%s" />',
+                isset( $wcap_agile_domain ) ? esc_attr( $wcap_agile_domain ) : ''
+            );            
+            // Here, we'll take the first argument of the array and add it to a label next to the checkbox
+            $html = '<label for="wcap_agile_domain_label"> '  . $args[0] . '</label> <br>  <span id ="wcap_agile_domain_label_error" > Please enter your Agile CRM Domain. </span>';
+            echo $html;
+        }
+
+        /***************************************************************
+         * WP Settings API callback for salesforce REST API
+        **************************************************************/
+        function wcap_agile_security_token_callback($args) {           
+            // First, we read the option
+            $wcap_agile_security_token = get_option( 'wcap_agile_security_token' );            
+            // Next, we update the name attribute to access this element's ID in the context of the display options array
+            // We also access the show_header element of the options collection in the call to the checked() helper function
+            printf(
+                '<input type="text" id="wcap_agile_security_token" name="wcap_agile_security_token" value="%s" />',
+                isset( $wcap_agile_security_token ) ? esc_attr( $wcap_agile_security_token ) : ''
+            );            
+            // Here, we'll take the first argument of the array and add it to a label next to the checkbox
+            $html = '<label for="wcap_agile_security_token_label"> '  . $args[0] . '</label> <br>  <span id ="wcap_agile_security_token_label_error"> Please enter your Agile CRM REST API key. </span>';
             echo $html;
         }
 
@@ -509,7 +606,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                         $quantity_total = $cart_details_value->quantity;
                         $product_id     = $cart_details_value->product_id;
                         $prod_name      = get_post( $product_id );
-                        $product_name   .= $prod_name->post_title;
+                        $product_name   = $prod_name->post_title;
                         if( isset( $cart_details_value->variation_id ) && '' != $cart_details_value->variation_id ){
                             $variation_id               = $cart_details_value->variation_id;
                             $variation                  = wc_get_product( $variation_id );

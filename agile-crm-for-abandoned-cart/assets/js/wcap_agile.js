@@ -1,5 +1,34 @@
 jQuery(function( $ ) {
 
+	$ ( '.button-primary' ).on( 'click', function( e ) {
+		if ( $(this).val() == 'Save Agile CRM changes' ) {			
+			var wcap_agile_user_name = document.getElementById( 'wcap_agile_user_name' ).value;
+			var wcap_agile_domain  = document.getElementById( 'wcap_agile_domain' ).value;
+			var wcap_agile_token     = document.getElementById( 'wcap_agile_security_token' ).value;
+			if ( '' == wcap_agile_token ) {
+				$( "#wcap_agile_security_token_label_error" ).fadeIn();
+	            setTimeout( function(){
+		            $( "#wcap_agile_security_token_label_error" ).fadeOut();
+		        },4000);
+		        e.preventDefault();
+			}
+			if ( '' == wcap_agile_domain ) {
+				$( "#wcap_agile_domain_label_error" ).fadeIn();
+	            setTimeout( function() {
+		            $( "#wcap_agile_domain_label_error" ).fadeOut();
+		        },4000);
+			    e.preventDefault();
+			}
+			if ( '' == wcap_agile_user_name ) {
+				$( "#wcap_agile_user_name_label_error" ).fadeIn();
+	            setTimeout( function(){
+		            $( "#wcap_agile_user_name_label_error" ).fadeOut();
+		        },4000);
+	            e.preventDefault();
+			}
+		}
+	});
+
 	var wcap_all = '';
 	$ ( '.add_single_cart' ).on( 'click', function( e ) {
 		var wcap_selected_id = [];
