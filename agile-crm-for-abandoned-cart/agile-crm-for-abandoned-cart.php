@@ -242,7 +242,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 array( $this, 'wcap_agile_security_token_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
-                array( __( 'Please provide your Agile CRM API key. Please, login to your agile crm account. On the top right of your main Agile CRM dashboard page, click on your name, then click on Admin Settings. On this page, click on API. Within the API, you will see your REST API key.', 'woocommerce-ac' ) )
+                array( __( 'Please provide your Agile CRM API key. <br/>Kindly, login to your Agile CRM account. On the top right of your Agile CRM dashboard page, click on your profile, then click on Admin Settings. On this page, click on API. Within the API, you will see your REST API key.', 'woocommerce-ac' ) )
             );
 
             // Finally, we register the fields with WordPress
