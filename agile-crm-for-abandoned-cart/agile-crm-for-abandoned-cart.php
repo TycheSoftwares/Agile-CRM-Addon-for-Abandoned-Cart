@@ -173,6 +173,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 <form method="post" action="options.php">
                     <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
                     <?php do_settings_sections( 'wcap_agile_crm_section' ); ?>
+                    <?php settings_errors(); ?>
                     <?php submit_button('Save Agile CRM changes'); ?>
                 </form>
                 <?php
