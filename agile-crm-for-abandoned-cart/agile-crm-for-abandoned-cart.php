@@ -691,9 +691,12 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
         }
 
         function wcap_add_export_all_data_to_agile_crm (){
+            $wcap_agile_crm_check = get_option( 'wcap_enable_agile_crm' );
+            if ( 'on' == $wcap_agile_crm_check ) {
             ?>
             <a href="javascript:void(0);"  id = "add_all_carts" class="button-secondary"><?php _e( 'Export to Agile CRM', 'woocommerce-ac' ); ?></a>
             <?php
+            }
         }
 
         function wcap_add_individual_record_to_agile_crm ( $actions, $abandoned_row_info ){
