@@ -204,16 +204,16 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 array( $this, 'wcap_add_automatically_to_agile_crm_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
-                array( __( 'When any abandoned cart is displayed to the Abandoned Orders tab, it will be automatically exported to the Agile CRM.', 'woocommerce-ac' ) )
+                array( __( 'When any abandoned cart record is captured on the Abandoned Orders tab, it will be automatically exported to the Agile CRM after the set time.', 'woocommerce-ac' ) )
             );
 
             add_settings_field(
                 '',
-                __( 'Automatically add abandoned cart data to Agile CRM after set time.', 'woocommerce-ac' ),
+                __( 'Automatically add abandoned cart data to Agile CRM after set time', 'woocommerce-ac' ),
                 array( $this, 'wcap_add_automatically_add_after_time_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
-                array( __( 'When any abandoned cart is displayed to the Abandoned Orders tab, it will be automatically exported to the Agile CRM after set time.', 'woocommerce-ac' ) )
+                array( __( 'Set the time after which the abandoned records will be exported automatically to the Agile CRM.', 'woocommerce-ac' ) )
             );
 
             add_settings_field(
