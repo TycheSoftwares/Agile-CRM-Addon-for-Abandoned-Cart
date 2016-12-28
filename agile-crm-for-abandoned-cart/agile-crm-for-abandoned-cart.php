@@ -224,16 +224,14 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 'wcap_agile_crm_general_settings_section',
                 array( __( 'Please provide your Agile CRM username.', 'woocommerce-ac' ) )
             );
-
-            $get_site_name =  strtolower( get_option ('blogname') );
-
+            
             add_settings_field(
                 'wcap_agile_domain',
                 __( 'Agile CRM Domain', 'woocommerce-ac' ),
                 array( $this, 'wcap_agile_domain_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
-                array( __( "Please provide your Agile CRM domain name. The domain is which you have given while creating the agile crm account. For e.x $get_site_name.agilecrm.com", 'woocommerce-ac' ) )
+                array( __( ".agilecrm.com. Please provide your Agile CRM domain name. <br/>The domain is which you have given while creating the agile CRM account.", 'woocommerce-ac' ) )
             );
 
             add_settings_field(
