@@ -7,3 +7,10 @@
 	display:none; 
 	color:red;
 }
+#wcap_agile_user_name, #wcap_agile_security_token{
+	width: 18em;
+}
+
+#wcap_agile_test_connection_ajax_loader{
+	display: none;
+}

@@ -56,6 +56,12 @@ function wcap_agile_crm_uninstall (){
     delete_option( 'wcap_add_automatically_add_after_email_frequency' );
     delete_option( 'wcap_add_automatically_add_after_time_day_or_hour' );
     delete_option( 'wcap_agile_last_id_checked' );
+
+    delete_option( 'wcap_agile_domain ');
+    delete_option( 'wcap_agile_user_name ');
+    delete_option( 'wcap_agile_security_token ');
+    delete_option ( 'wcap_agile_connection_established' );
+    
     wp_clear_scheduled_hook( 'wcap_agile_add_abandoned_data_schedule' );
 }
 
@@ -68,6 +74,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             if ( ! has_action ('wcap_add_tabs' ) ){
                 add_action ( 'wcap_add_tabs',                          array( &$this, 'wcap_agile_crm_add_tab' ));
             }
+            add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'wcap_agile_plugin_action_links' ) );
             add_action ( 'admin_init',                             array( &$this, 'wcap_agile_crm_initialize_settings_options' ) );
             add_action ( 'wcap_display_message',                   array( &$this, 'wcap_agile_crm_display_message' ) );
             add_action ( 'wcap_crm_data',                          array( &$this, 'wcap_agile_crm_display_data' ) );
@@ -84,6 +91,49 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
              */
             add_action ( 'update_option_wcap_add_automatically_add_after_email_frequency',  array( &$this,'wcap_agile_reset_cron_time_duration' ) );
             add_action ( 'update_option_wcap_add_automatically_add_after_time_day_or_hour', array( &$this,'wcap_agile_reset_cron_time_duration' ) );
+
+            /*
+            Test Connection for saved settings
+            */
+            add_action ( 'wp_ajax_wcap_agile_check_connection',                             array( &$this, 'wcap_agile_check_connection_callback' ));
+        }
+
+        function wcap_agile_check_connection_callback(){
+
+            $wcap_domain   = $_POST['wcap_agile_domain'];
+            $wcap_email    = $_POST['wcap_agile_user_name'];
+            $wcap_rest_api = $_POST['wcap_agile_token'];
+
+            $content_type  = "application/json";
+            $entity        = "api-key";
+            $agile_url     = "https://" . $wcap_domain . ".agilecrm.com/dev/api/" . $entity;
+            
+            $url = $agile_url;
+            $ch  = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_UNRESTRICTED_AUTH, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERPWD, $wcap_email . ':' . $wcap_rest_api);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Content-type : $content_type;", 'Accept : application/json'
+            ));
+            $curlresult = curl_exec ($ch);
+            curl_close ($ch);
+            if ( preg_match( "/api_key/i", $curlresult ) ) {
+                $result = "The Agile CRM connection successfuly established!";
+                update_option ( 'wcap_agile_connection_established', 'yes' );
+            } else {
+                $result = "The Agile CRM connection has FAILED! Please check your credentials!";
+                update_option ( 'wcap_agile_connection_established', 'no' );
+            }
+            echo $result;
+            wp_die();
         }
 
         function wcap_agile_crm_create_table() {
@@ -104,14 +154,37 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             $wpdb->query( $sql );        
         }
 
+        /**
+         * Show action links on the plugin screen.
+         *
+         * @param   mixed $links Plugin Action links
+         * @return  array
+         */
+        
+        public static function wcap_agile_plugin_action_links( $links ) {
+            $action_links = array(
+                'settings' => '<a href="' . admin_url( 'admin.php?page=woocommerce_ac_page&action=wcap_crm' ) . '" title="' . esc_attr( __( 'View Agile CRM Settings', 'woocommerce-ac' ) ) . '">' . __( 'Settings', 'woocommerce-ac' ) . '</a>',
+            );
+            return array_merge( $action_links, $links );
+        }
+
         function wcap_agile_enqueue_scripts_js( $hook ) {
             if ( $hook != 'woocommerce_page_woocommerce_ac_page' ) {
                 return;
             } else {
                 wp_register_script( 'wcap-agile', plugins_url()  . '/agile-crm-for-abandoned-cart/assets/js/wcap_agile.js', array( 'jquery' ) );
-                wp_enqueue_script( 'wcap-agile' );
+                wp_enqueue_script ( 'wcap-agile' );
+                $wcap_agile_connection_established = get_option ('wcap_agile_connection_established');
+                $wcap_agile_domain                 = get_option( 'wcap_agile_domain ');
+                $wcap_agile_user_name              = get_option( 'wcap_agile_user_name ');
+                $wcap_agile_security_token         = get_option( 'wcap_agile_security_token ');
                 wp_localize_script( 'wcap-agile', 'wcap_agile_params', array(
-                                    'ajax_url' => admin_url( 'admin-ajax.php' )
+                                    'ajax_url'                          => admin_url( 'admin-ajax.php' ),
+                                    'wcap_agile_user_name'              => $wcap_agile_user_name,
+                                    'wcap_agile_domain_name'            => $wcap_agile_domain,
+                                    'wcap_agile_api_key'                => $wcap_agile_security_token,
+                                    'wcap_agile_connection_established' => $wcap_agile_connection_established
+                                    
                 ) );
             }
         }
@@ -170,11 +243,10 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
                 ?>
                 <p><?php _e( 'Change settings for exporting the abandoned cart data to the Agile CRM.', 'woocommerce-ac' ); ?></p>
 
-                <form method="post" action="options.php">
+                <form method="post" action="options.php" id="wcap_agile_crm_form">
                     <?php settings_fields     ( 'wcap_agile_crm_setting' ); ?>
                     <?php do_settings_sections( 'wcap_agile_crm_section' ); ?>
-                    <?php settings_errors(); ?>
-                    <?php submit_button('Save Agile CRM changes'); ?>
+                    <?php submit_button( 'Save Agile CRM Settings', 'primary', 'wcap-save-agile-settings' ); ?>
                 </form>
                 <?php
             }
@@ -237,11 +309,19 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
             add_settings_field(
                 'wcap_agile_security_token',
-                __( 'Agile CRM REST API Key', 'woocommerce-ac' ),
+                __( 'Agile CRM API Key', 'woocommerce-ac' ),
                 array( $this, 'wcap_agile_security_token_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
                 array( __( 'Please provide your Agile CRM REST API key. <br/>Kindly, login to your Agile CRM account. On the top right of your Agile CRM dashboard page, click on your profile, then click on Admin Settings. On this page, click on API. Within the API, you will see your REST API key.', 'woocommerce-ac' ) )
+            );
+
+            add_settings_field(
+               'wcap_agile_test_connection',
+               '',
+               array( $this, 'wcap_agile_test_connection_callback' ),
+               'wcap_agile_crm_section',
+               'wcap_agile_crm_general_settings_section'
             );
 
             // Finally, we register the fields with WordPress
@@ -418,6 +498,14 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
             // Here, we'll take the first argument of the array and add it to a label next to the checkbox
             $html = '<label for="wcap_agile_security_token_label"> '  . $args[0] . '</label> <br>  <span id ="wcap_agile_security_token_label_error"> Please enter your Agile CRM REST API key. </span>';
             echo $html;
+        }
+
+        
+        public static function wcap_agile_test_connection_callback() {
+            
+            print "<a href='' id='wcap_agile_test' class= 'wcap_agile_test' >" . __( 'Test Connection', 'woocommerce-ac' ) . "</a> &nbsp &nbsp
+                <img src='" . plugins_url() . "/woocommerce-abandon-cart-pro/assets/images/loading.gif' alt='Loading...' id='wcap_agile_test_connection_ajax_loader' class = 'wcap_agile_test_connection_ajax_loader' >";
+            print "<div id='wcap_agile_test_connection_message'></div>";
         }
 
         function wcap_agile_crm_display_message (){
@@ -692,18 +780,20 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
         function wcap_add_export_all_data_to_agile_crm (){
             $wcap_agile_crm_check = get_option( 'wcap_enable_agile_crm' );
-            if ( 'on' == $wcap_agile_crm_check ) {
+            $wcap_agile_crm_check_connection = get_option ( 'wcap_agile_connection_established' );
+            if ( 'on' == $wcap_agile_crm_check && 'yes' == $wcap_agile_crm_check_connection ) {
             ?>
-            <a href="javascript:void(0);"  id = "add_all_carts" class="button-secondary"><?php _e( 'Export to Agile CRM', 'woocommerce-ac' ); ?></a>
+                <a href="javascript:void(0);"  id = "add_all_carts" class="button-secondary"><?php _e( 'Export to Agile CRM', 'woocommerce-ac' ); ?></a>
             <?php
             }
         }
 
         function wcap_add_individual_record_to_agile_crm ( $actions, $abandoned_row_info ){
 
-            $wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
+            $wcap_agile_crm_check            = get_option ( 'wcap_enable_agile_crm' );
+            $wcap_agile_crm_check_connection = get_option ( 'wcap_agile_connection_established' );
 
-            if ( 'on' == $wcap_agile_crm_check ) { 
+            if ( 'on' == $wcap_agile_crm_check && 'yes' == $wcap_agile_crm_check_connection ) { 
 
                 if ( $abandoned_row_info->user_id != 0 ){
                     $abandoned_order_id         = $abandoned_row_info->id ;
@@ -723,7 +813,8 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
         function wcap_add_bulk_record_to_agile_crm ( $wcap_abandoned_bulk_actions ){
             $wcap_agile_crm_check = get_option ( 'wcap_enable_agile_crm' );
-            if ( 'on' == $wcap_agile_crm_check ) {
+            $wcap_agile_crm_check_connection = get_option ( 'wcap_agile_connection_established' );
+            if ( 'on' == $wcap_agile_crm_check && 'yes' == $wcap_agile_crm_check_connection ) {
                 $inserted = array(
                     'wcap_add_agile' => __( 'Add to Agile CRM', 'woocommerce-ac' )
                 );

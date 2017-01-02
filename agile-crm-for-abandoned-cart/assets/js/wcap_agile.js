@@ -1,10 +1,37 @@
 jQuery(function( $ ) {
 
+	var wcap_agile_connection_established = '';
+
+	$ ( '#wcap_agile_test' ).on( 'click', function( e ) {
+		e.preventDefault();
+		var wcap_agile_user_name = $("#wcap_agile_user_name").val();
+		var wcap_agile_domain    = $("#wcap_agile_domain").val();
+
+		var wcap_agile_token     = $("#wcap_agile_security_token").val();
+        var data = {
+            wcap_agile_user_name: wcap_agile_user_name,
+            wcap_agile_domain: wcap_agile_domain,
+            wcap_agile_token: wcap_agile_token,
+            action: 'wcap_agile_check_connection'
+        };
+        $( '#wcap_agile_test_connection_ajax_loader' ).show();
+        $.post( wcap_agile_params.ajax_url, data, function( response ) {
+        	wcap_check_string = response.indexOf("successfuly established");
+        	if ( wcap_check_string !== -1 ){
+        		wcap_agile_connection_established = 'yes';
+        	}
+    		$( '#wcap_agile_test_connection_message' ).html( response );
+	        $( '#wcap_agile_test_connection_ajax_loader' ).hide();
+        });
+	});
+
 	$ ( '.button-primary' ).on( 'click', function( e ) {
-		if ( $(this).val() == 'Save Agile CRM changes' ) {			
-			var wcap_agile_user_name = document.getElementById( 'wcap_agile_user_name' ).value;
-			var wcap_agile_domain  = document.getElementById( 'wcap_agile_domain' ).value;
-			var wcap_agile_token     = document.getElementById( 'wcap_agile_security_token' ).value;
+		if ( $(this).val() == 'Save Agile CRM Settings' ) {			
+			
+			var wcap_agile_user_name = $("#wcap_agile_user_name").val();
+			var wcap_agile_domain    = $("#wcap_agile_domain").val();
+			var wcap_agile_token     = $("#wcap_agile_security_token").val();
+			
 			if ( '' == wcap_agile_token ) {
 				$( "#wcap_agile_security_token_label_error" ).fadeIn();
 	            setTimeout( function(){
@@ -25,6 +52,31 @@ jQuery(function( $ ) {
 		            $( "#wcap_agile_user_name_label_error" ).fadeOut();
 		        },4000);
 	            e.preventDefault();
+			}
+
+			if ( ( wcap_agile_params.wcap_agile_user_name   != wcap_agile_user_name
+				|| wcap_agile_params.wcap_agile_domain_name != wcap_agile_domain 
+				|| wcap_agile_params.wcap_agile_api_key     != wcap_agile_token ) &&
+				 ( wcap_agile_params.wcap_agile_connection_established != 'yes' || wcap_agile_connection_established != 'yes') )  {
+				e.preventDefault();
+				var data = {
+		            wcap_agile_user_name: wcap_agile_user_name,
+		            wcap_agile_domain: wcap_agile_domain,
+		            wcap_agile_token: wcap_agile_token,
+		            action: 'wcap_agile_check_connection'
+		        };
+		        $( '#wcap_agile_test_connection_ajax_loader' ).show();
+		        $.post( wcap_agile_params.ajax_url, data, function( response ) {
+		    		wcap_check_string = response.indexOf("successfuly established");
+		    		$( '#wcap_agile_test_connection_ajax_loader' ).hide();
+		    		
+			    	if ( wcap_check_string !== -1 ){
+			    		
+			        	$('#wcap_agile_crm_form').submit();
+			        }else{
+			    		$( '#wcap_agile_test_connection_message' ).html( response );
+					}
+			    });
 			}
 		}
 	});
