@@ -16,7 +16,7 @@ jQuery(function( $ ) {
         };
         $( '#wcap_agile_test_connection_ajax_loader' ).show();
         $.post( wcap_agile_params.ajax_url, data, function( response ) {
-        	wcap_check_string = response.indexOf("successfuly established");
+        	var wcap_check_string = response.indexOf("successfuly established");
         	if ( wcap_check_string !== -1 ){
         		wcap_agile_connection_established = 'yes';
         	}
@@ -67,7 +67,7 @@ jQuery(function( $ ) {
 		        };
 		        $( '#wcap_agile_test_connection_ajax_loader' ).show();
 		        $.post( wcap_agile_params.ajax_url, data, function( response ) {
-		    		wcap_check_string = response.indexOf("successfuly established");
+		    		var wcap_check_string = response.indexOf("successfuly established");
 		    		$( '#wcap_agile_test_connection_ajax_loader' ).hide();
 		    		
 			    	if ( wcap_check_string !== -1 ){
@@ -84,6 +84,7 @@ jQuery(function( $ ) {
 	var wcap_all = '';
 	$ ( '.add_single_cart' ).on( 'click', function( e ) {
 		var wcap_selected_id = [];
+		var wcap_all = '';
 		wcap_selected_id.push ( $( this ).attr( 'data-id' ) );
 		$( '#wcap_manual_email_data_loading' ).show();
 		var data = {
@@ -94,19 +95,29 @@ jQuery(function( $ ) {
 
 		$.post( wcap_agile_params.ajax_url, data, function( response ) {
 			$( '#wcap_manual_email_data_loading' ).hide();
+			var wcap_check_string = response.indexOf("duplicate_record");
+			if ( wcap_check_string !== -1 ){
 
-			var abadoned_order_count = response;
-			var order                = 'order';
-			if ( abadoned_order_count > 1 ){
-				order 				 = 'orders';
-			}
-			
-			var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
-			$( ".wcap_agile_message_p" ).html( display_message );
-            $( "#wcap_agile_message" ).fadeIn();
-            setTimeout( function(){
-            	$( "#wcap_agile_message" ).fadeOut();
-            },4000);
+        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+				$( ".wcap_agile_message_p_error" ).html( display_message );
+	            $( "#wcap_agile_message_error" ).fadeIn();
+	            setTimeout( function(){
+	            	$( "#wcap_agile_message_error" ).fadeOut();
+	            },4000);
+        	}else{
+				var abadoned_order_count = response;
+				var order                = 'order';
+				if ( abadoned_order_count > 1 ){
+					order 				 = 'orders';
+				}
+				
+				var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
+				$( ".wcap_agile_message_p" ).html( display_message );
+	            $( "#wcap_agile_message" ).fadeIn();
+	            setTimeout( function(){
+	            	$( "#wcap_agile_message" ).fadeOut();
+	            },4000);
+        	}
 		});
 	});
 
@@ -123,18 +134,29 @@ jQuery(function( $ ) {
 
 		$.post( wcap_agile_params.ajax_url, data, function( response ) {
 			$( '#wcap_manual_email_data_loading' ).hide();
-			var abadoned_order_count = response;
-			var order                = 'order';
-			if ( abadoned_order_count > 1 ){
-				order 				 = 'orders';
-			}
-			
-			var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
-			$( ".wcap_agile_message_p" ).html( display_message );
-            $( "#wcap_agile_message" ).fadeIn();
-            setTimeout( function(){
-            	$( "#wcap_agile_message" ).fadeOut();
-            },4000);
+
+			var wcap_check_string = response.indexOf("no_record");
+			if ( wcap_check_string !== -1 ){
+				var display_message       = 'All Abandoned cart has been already imported to Agile CRM.';
+				$( ".wcap_agile_message_p_error" ).html( display_message );
+	            $( "#wcap_agile_message_error" ).fadeIn();
+	            setTimeout( function(){
+	            	$( "#wcap_agile_message_error" ).fadeOut();
+	            },4000);
+			}else{
+				var abadoned_order_count = response;
+				var order                = 'order';
+				if ( abadoned_order_count > 1 ){
+					order 				 = 'orders';
+				}
+				
+				var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
+				$( ".wcap_agile_message_p" ).html( display_message );
+	            $( "#wcap_agile_message" ).fadeIn();
+	            setTimeout( function(){
+	            	$( "#wcap_agile_message" ).fadeOut();
+	            },4000);
+        	}
 		});
 	});
 
@@ -149,7 +171,7 @@ jQuery(function( $ ) {
 		        	wcap_selected_id.push( checkboxes[i].value );
 		    	}
 		  	}
-		  	
+		  	var wcap_all = '';
 		  	$( '#wcap_manual_email_data_loading' ).show();
 			var data = {
 				action                  : 'wcap_add_to_agile_crm',
@@ -159,18 +181,30 @@ jQuery(function( $ ) {
 			
 			$.post( wcap_agile_params.ajax_url, data, function( response ) {
 				$( '#wcap_manual_email_data_loading' ).hide();
-				var abadoned_order_count = response;
-				var order                = 'order';
-				if ( abadoned_order_count > 1 ){
-					order 				 = 'orders';
-				}
-				
-				var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
-				$( ".wcap_agile_message_p" ).html( display_message );
-	            $( "#wcap_agile_message" ).fadeIn();
-	            setTimeout( function(){
-	            	$( "#wcap_agile_message" ).fadeOut();
-	            },4000);
+
+				var wcap_check_string = response.indexOf("duplicate_record");
+				if ( wcap_check_string !== -1 ){
+
+	        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+					$( ".wcap_agile_message_p_error" ).html( display_message );
+		            $( "#wcap_agile_message_error" ).fadeIn();
+		            setTimeout( function(){
+		            	$( "#wcap_agile_message_error" ).fadeOut();
+		            },4000);
+	        	}else{
+					var abadoned_order_count = response;
+					var order                = 'order';
+					if ( abadoned_order_count > 1 ){
+						order 				 = 'orders';
+					}
+					
+					var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
+					$( ".wcap_agile_message_p" ).html( display_message );
+		            $( "#wcap_agile_message" ).fadeIn();
+		            setTimeout( function(){
+		            	$( "#wcap_agile_message" ).fadeOut();
+		            },4000);
+	        	}
 			});
 			e.preventDefault();
 		}
@@ -187,7 +221,7 @@ jQuery(function( $ ) {
 		        	wcap_selected_id.push( checkboxes[i].value );
 		    	}
 		  	}
-		  	
+		  	var wcap_all = '';
 		  	$( '#wcap_manual_email_data_loading' ).show();
 			var data = {
 				action                  : 'wcap_add_to_agile_crm',
@@ -197,18 +231,29 @@ jQuery(function( $ ) {
 			
 			$.post( wcap_agile_params.ajax_url, data, function( response ) {
 				$( '#wcap_manual_email_data_loading' ).hide();
-				var abadoned_order_count = response;
-				var order                = 'order';
-				if ( abadoned_order_count > 1 ){
-					order 				 = 'orders';
-				}
-				
-				var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
-				$( ".wcap_agile_message_p" ).html( display_message );
-	            $( "#wcap_agile_message" ).fadeIn();
-	            setTimeout( function(){
-	            	$( "#wcap_agile_message" ).fadeOut();
-	            },4000);
+				var wcap_check_string = response.indexOf("duplicate_record");
+				if ( wcap_check_string !== -1 ){
+
+	        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+					$( ".wcap_agile_message_p_error" ).html( display_message );
+		            $( "#wcap_agile_message_error" ).fadeIn();
+		            setTimeout( function(){
+		            	$( "#wcap_agile_message_error" ).fadeOut();
+		            },4000);
+	        	}else{
+					var abadoned_order_count = response;
+					var order                = 'order';
+					if ( abadoned_order_count > 1 ){
+						order 				 = 'orders';
+					}
+					
+					var display_message       = abadoned_order_count  + ' Abandoned ' +  order + ' has been successfully added to Agile CRM.'
+					$( ".wcap_agile_message_p" ).html( display_message );
+		            $( "#wcap_agile_message" ).fadeIn();
+		            setTimeout( function(){
+		            	$( "#wcap_agile_message" ).fadeOut();
+		            },4000);
+	        	}
 			});
 			e.preventDefault();
 		}
