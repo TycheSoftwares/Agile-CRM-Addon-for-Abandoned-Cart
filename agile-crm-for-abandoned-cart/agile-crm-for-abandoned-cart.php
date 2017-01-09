@@ -309,7 +309,7 @@ if ( ! class_exists( 'Wcap_Agile_CRM' ) ) {
 
             add_settings_field(
                 'wcap_agile_security_token',
-                __( 'Agile CRM API Key', 'woocommerce-ac' ),
+                __( 'Agile CRM REST API Key', 'woocommerce-ac' ),
                 array( $this, 'wcap_agile_security_token_callback' ),
                 'wcap_agile_crm_section',
                 'wcap_agile_crm_general_settings_section',
