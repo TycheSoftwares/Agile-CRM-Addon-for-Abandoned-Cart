@@ -1,6 +1,6 @@
 /* Hide message of data sucessfully added to agile CRM
 -------------------------------------------------------------- */
-#wcap_agile_message{
+#wcap_agile_message, #wcap_agile_message_error{
 	display: none;
 }
 #wcap_agile_security_token_label_error, #wcap_agile_domain_label_error, #wcap_agile_user_name_label_error{
