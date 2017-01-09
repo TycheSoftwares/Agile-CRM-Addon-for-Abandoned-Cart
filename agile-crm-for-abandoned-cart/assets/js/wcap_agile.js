@@ -165,12 +165,49 @@ jQuery(function( $ ) {
 			
 			var checkboxes = document.getElementsByName('abandoned_order_id[]');
 			var wcap_selected_id = [];
+			var wcap_parent      = [];
 		  	for (var i = 0; i < checkboxes.length; i++) {
 		     
 		     	if ( checkboxes[i].checked ) {
+		     		var email_check = $( checkboxes[i] ).parent().parent().find('.email').text();
+		     		var wcap_agile = email_check.indexOf( "Add to Agile CRM" );
+		     		wcap_parent [ checkboxes[i].value ] =  email_check ;
 		        	wcap_selected_id.push( checkboxes[i].value );
 		    	}
 		  	}
+
+		  	if ( wcap_selected_id.length == 0 ) {
+		  		var display_message = 'Please select atleast 1 Abandoned order to Add to Agile CRM.';
+				$( ".wcap_agile_message_p_error" ).html( display_message );
+	            $( "#wcap_ac_bulk_message" ).fadeIn();
+	            setTimeout( function(){
+	            	$( "#wcap_ac_bulk_message" ).fadeOut();
+	            },3000);
+		  		e.preventDefault();	
+		  		return;
+		  	}
+		  	var allow = 'no';
+			if ( wcap_parent.length > 0 ) {
+				for ( var key in wcap_parent ) {
+				  if ( wcap_parent[key] > 0 ){
+				  	allow = 'yes';
+				  } else {
+				  	var visitor = document.querySelectorAll( "input[ value = '"+ key +"']" );
+				  	visitor[0].checked = false;
+				  }
+				}					
+				if ( 'no' == allow ) {
+					var display_message = 'Add to Agile CRM cannot be applied on Visitor carts.';
+					$( ".wcap_ac_bulk_message_p" ).html( display_message );
+		            $( "#wcap_agile_message_error" ).fadeIn();
+		            setTimeout( function() {
+		            	$( "#wcap_agile_message_error" ).fadeOut();
+		            },3000);
+					e.preventDefault();
+					return;
+				}
+			}
+
 		  	var wcap_all = '';
 		  	$( '#wcap_manual_email_data_loading' ).show();
 			var data = {
@@ -215,6 +252,7 @@ jQuery(function( $ ) {
 			
 			var checkboxes = document.getElementsByName('abandoned_order_id[]');
 			var wcap_selected_id = [];
+			var wcap_parent      = [];
 		  	for (var i = 0; i < checkboxes.length; i++) {
 		     
 		     	if ( checkboxes[i].checked ) {
