@@ -98,7 +98,7 @@ jQuery(function( $ ) {
 			var wcap_check_string = response.indexOf("duplicate_record");
 			if ( wcap_check_string !== -1 ){
 
-        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+        		var display_message       = 'The Abandoned cart is already exported to Agile CRM.';
 				$( ".wcap_agile_message_p_error" ).html( display_message );
 	            $( "#wcap_agile_message_error" ).fadeIn();
 	            setTimeout( function(){
@@ -137,7 +137,7 @@ jQuery(function( $ ) {
 
 			var wcap_check_string = response.indexOf("no_record");
 			if ( wcap_check_string !== -1 ){
-				var display_message       = 'All Abandoned cart has been already imported to Agile CRM.';
+				var display_message       = 'All the Abandoned carts are already exported to Agile CRM. No new carts found to export.';
 				$( ".wcap_agile_message_p_error" ).html( display_message );
 	            $( "#wcap_agile_message_error" ).fadeIn();
 	            setTimeout( function(){
@@ -222,7 +222,7 @@ jQuery(function( $ ) {
 				var wcap_check_string = response.indexOf("duplicate_record");
 				if ( wcap_check_string !== -1 ){
 
-	        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+	        		var display_message       = 'Selected Abandoned carts are already exported to Agile CRM. No new carts found to export.';
 					$( ".wcap_agile_message_p_error" ).html( display_message );
 		            $( "#wcap_agile_message_error" ).fadeIn();
 		            setTimeout( function(){
@@ -305,7 +305,7 @@ jQuery(function( $ ) {
 				var wcap_check_string = response.indexOf("duplicate_record");
 				if ( wcap_check_string !== -1 ){
 
-	        		var display_message       = 'Abandoned cart has been already imported to Agile CRM.';
+	        		var display_message       = 'Selected Abandoned carts are already exported to Agile CRM. No new carts found to export.';
 					$( ".wcap_agile_message_p_error" ).html( display_message );
 		            $( "#wcap_agile_message_error" ).fadeIn();
 		            setTimeout( function(){
