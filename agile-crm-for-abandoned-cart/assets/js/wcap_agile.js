@@ -179,9 +179,9 @@ jQuery(function( $ ) {
 		  	if ( wcap_selected_id.length == 0 ) {
 		  		var display_message = 'Please select atleast 1 Abandoned order to Add to Agile CRM.';
 				$( ".wcap_agile_message_p_error" ).html( display_message );
-	            $( "#wcap_ac_bulk_message" ).fadeIn();
+	            $( "#wcap_agile_message_error" ).fadeIn();
 	            setTimeout( function(){
-	            	$( "#wcap_ac_bulk_message" ).fadeOut();
+	            	$( "#wcap_agile_message_error" ).fadeOut();
 	            },3000);
 		  		e.preventDefault();	
 		  		return;
@@ -198,7 +198,7 @@ jQuery(function( $ ) {
 				}					
 				if ( 'no' == allow ) {
 					var display_message = 'Add to Agile CRM cannot be applied on Visitor carts.';
-					$( ".wcap_ac_bulk_message_p" ).html( display_message );
+					$( "#wcap_agile_message_error" ).html( display_message );
 		            $( "#wcap_agile_message_error" ).fadeIn();
 		            setTimeout( function() {
 		            	$( "#wcap_agile_message_error" ).fadeOut();
@@ -263,9 +263,9 @@ jQuery(function( $ ) {
 		  	if ( wcap_selected_id.length == 0 ) {
 		  		var display_message = 'Please select atleast 1 Abandoned order to Add to Agile CRM.';
 				$( ".wcap_agile_message_p_error" ).html( display_message );
-	            $( "#wcap_ac_bulk_message" ).fadeIn();
+	            $( "#wcap_agile_message_error" ).fadeIn();
 	            setTimeout( function(){
-	            	$( "#wcap_ac_bulk_message" ).fadeOut();
+	            	$( "#wcap_agile_message_error" ).fadeOut();
 	            },3000);
 		  		e.preventDefault();	
 		  		return;
@@ -283,7 +283,7 @@ jQuery(function( $ ) {
 				}					
 				if ( 'no' == allow ) {
 					var display_message = 'Add to Agile CRM cannot be applied on Visitor carts.';
-					$( ".wcap_ac_bulk_message_p" ).html( display_message );
+					$( ".wcap_agile_message_p_error" ).html( display_message );
 		            $( "#wcap_agile_message_error" ).fadeIn();
 		            setTimeout( function() {
 		            	$( "#wcap_agile_message_error" ).fadeOut();
