@@ -163,7 +163,7 @@ jQuery(function( $ ) {
 	$ ( '#doaction' ).on( 'click', function( e ) {
 		if ( $( '#bulk-action-selector-top' ).val() == 'wcap_add_agile' ) {
 			
-			var checkboxes = document.getElementsByName('abandoned_order_id[]');
+			var checkboxes 		 = document.getElementsByName('abandoned_order_id[]');
 			var wcap_selected_id = [];
 			var wcap_parent      = [];
 		  	for (var i = 0; i < checkboxes.length; i++) {
@@ -171,7 +171,7 @@ jQuery(function( $ ) {
 		     	if ( checkboxes[i].checked ) {
 		     		var email_check = $( checkboxes[i] ).parent().parent().find('.email').text();
 		     		var wcap_agile = email_check.indexOf( "Add to Agile CRM" );
-		     		wcap_parent [ checkboxes[i].value ] =  email_check ;
+		     		wcap_parent [ checkboxes[i].value ] =  wcap_agile ;
 		        	wcap_selected_id.push( checkboxes[i].value );
 		    	}
 		  	}
@@ -256,6 +256,9 @@ jQuery(function( $ ) {
 		  	for (var i = 0; i < checkboxes.length; i++) {
 		     
 		     	if ( checkboxes[i].checked ) {
+		     		var email_check = $( checkboxes[i] ).parent().parent().find('.email').text();
+		     		var wcap_agile = email_check.indexOf( "Add to Agile CRM" );
+		     		wcap_parent [ checkboxes[i].value ] =  wcap_agile ;
 		        	wcap_selected_id.push( checkboxes[i].value );
 		    	}
 		  	}
