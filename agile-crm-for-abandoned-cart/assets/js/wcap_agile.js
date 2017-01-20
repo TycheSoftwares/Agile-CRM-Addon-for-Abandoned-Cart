@@ -87,6 +87,7 @@ jQuery(function( $ ) {
 		var wcap_all = '';
 		wcap_selected_id.push ( $( this ).attr( 'data-id' ) );
 		$( '#wcap_manual_email_data_loading' ).show();
+		$( '#wcap_manual_email_data_loading_text_agile' ).show();
 		var data = {
 			action                  : 'wcap_add_to_agile_crm',
 			wcap_abandoned_cart_ids : wcap_selected_id,
@@ -95,6 +96,7 @@ jQuery(function( $ ) {
 
 		$.post( wcap_agile_params.ajax_url, data, function( response ) {
 			$( '#wcap_manual_email_data_loading' ).hide();
+			$( '#wcap_manual_email_data_loading_text_agile' ).hide();
 			var wcap_check_string = response.indexOf("duplicate_record");
 			if ( wcap_check_string !== -1 ){
 
@@ -126,6 +128,7 @@ jQuery(function( $ ) {
 		wcap_all = 'yes';
 		var wcap_selected_id = [];
 		$( '#wcap_manual_email_data_loading' ).show();
+		$( '#wcap_manual_email_data_loading_text_agile' ).show();
 		var data = {
 			action                  : 'wcap_add_to_agile_crm',
 			wcap_abandoned_cart_ids : wcap_selected_id,
@@ -134,6 +137,7 @@ jQuery(function( $ ) {
 
 		$.post( wcap_agile_params.ajax_url, data, function( response ) {
 			$( '#wcap_manual_email_data_loading' ).hide();
+			$( '#wcap_manual_email_data_loading_text_agile' ).hide();
 
 			var wcap_check_string = response.indexOf("no_record");
 			if ( wcap_check_string !== -1 ){
@@ -210,6 +214,7 @@ jQuery(function( $ ) {
 
 		  	var wcap_all = '';
 		  	$( '#wcap_manual_email_data_loading' ).show();
+		  	$( '#wcap_manual_email_data_loading_text_agile' ).show();
 			var data = {
 				action                  : 'wcap_add_to_agile_crm',
 				wcap_abandoned_cart_ids : wcap_selected_id,
@@ -218,7 +223,7 @@ jQuery(function( $ ) {
 			
 			$.post( wcap_agile_params.ajax_url, data, function( response ) {
 				$( '#wcap_manual_email_data_loading' ).hide();
-
+				$( '#wcap_manual_email_data_loading_text_agile' ).hide();
 				var wcap_check_string = response.indexOf("duplicate_record");
 				if ( wcap_check_string !== -1 ){
 
@@ -297,6 +302,7 @@ jQuery(function( $ ) {
 			}
 		  	var wcap_all = '';
 		  	$( '#wcap_manual_email_data_loading' ).show();
+		  	$( '#wcap_manual_email_data_loading_text_agile' ).show();
 			var data = {
 				action                  : 'wcap_add_to_agile_crm',
 				wcap_abandoned_cart_ids : wcap_selected_id,
@@ -305,6 +311,7 @@ jQuery(function( $ ) {
 			
 			$.post( wcap_agile_params.ajax_url, data, function( response ) {
 				$( '#wcap_manual_email_data_loading' ).hide();
+				$( '#wcap_manual_email_data_loading_text_agile' ).hide();
 				var wcap_check_string = response.indexOf("duplicate_record");
 				if ( wcap_check_string !== -1 ){
 
