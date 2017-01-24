@@ -202,7 +202,7 @@ jQuery(function( $ ) {
 				}					
 				if ( 'no' == allow ) {
 					var display_message = 'Add to Agile CRM cannot be applied on Visitor carts.';
-					$( "#wcap_agile_message_p_error" ).html( display_message );
+					$( ".wcap_agile_message_p_error" ).html( display_message );
 		            $( "#wcap_agile_message_error" ).fadeIn();
 		            setTimeout( function() {
 		            	$( "#wcap_agile_message_error" ).fadeOut();
