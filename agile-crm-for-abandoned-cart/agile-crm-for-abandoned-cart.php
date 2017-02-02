@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Agile CRM Addon for Abandoned Cart Pro for WooCommerce
+Plugin Name: Agile CRM Sync for WooCommerce Abandoned Cart Plugin
 Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-abandoned-cart-pro
 Description: This plugin allow you to export the abandoned cart data to your Agile CRM.
 Version: 1.0
